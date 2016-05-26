@@ -19,6 +19,7 @@ function more_filters_help($route_name, RouteMatchInterface $route_match) {
       $output .= '<p>' . t('A collection of useful input filters:') . '</p>';
       $output .= '<ul>';
       $output .= '<li>' . t('Ordinals Filter - Wraps ordinals (nd/st/th/rd) in &lt;span&gt; tags, so they can be superscripted with css.') . '</li>';
+      $output .= '<li>' . t('Phone Format Filter - Convert phone numbers in 555.222.1111 format to (555) 222-1111 format.') . '</li>';
       $output .= '</ul>';
       return $output;
 
@@ -55,9 +56,33 @@ function _filter_ordinals($text, $filter) {
   $text = _filter_text_only($text, $filter, $task, $pattern);
 
   // @todo
-  // Add support for settings: tags to ignore / class name to use in <span> /
-  // option to use <sup> with no class, instead of <span>.
+  // Add support for settings: tags to ignore / class name to use in <span>.
   // Also, add handling for HTML comments (as seen in _filter_url()).
+  return $text;
+}
+
+/**
+ * Convert phone numbers in 555.222.1111 format to (555) 222-1111 format.
+ *
+ * @param string $text
+ *   The text to apply the filter to.
+ * @param object $filter
+ *   The Filter object.
+ *
+ * @return string
+ *   The processed text with filter applied.
+ */
+function _filter_phone_format($text, $filter) {
+  // The filter callback to call for each matching item.
+  $task = '_filter_phone_format_parse_matches';
+  // The regex pattern for finding phone numbers with format: 555.222.1111.
+  $pattern = "/([0-9]{3})\s*\.\s*([0-9]{3})\s*\.\s*([0-9]{4})/";
+
+  // Apply filter to text.
+  $text = _filter_text_only($text, $filter, $task, $pattern);
+
+  // @todo
+  // Add support for setting that performs the reverse conversion.
   return $text;
 }
 
@@ -138,7 +163,7 @@ function _filter_text_only($text, $filter, $task, $pattern, $ignore_tags = array
 /**
  * Adds the <span class="ordinal"> wrapper around a matched ordinal.
  *
- * Callback for preg_replace_callback() within _filter_ordinals().
+ * Callback for preg_replace_callback() within _filter_text_only().
  */
 function _filter_ordinals_parse_matches($match, $filter_settings = NULL) {
   // Allow the filter's form settings to be passed into this callback fn and
@@ -177,6 +202,27 @@ function _filter_ordinals_parse_matches($match, $filter_settings = NULL) {
     $output .= '<' . $ordinal_tag . $ordinal_class_txt . '>';
     $output .= $match[$ordinal];
     $output .= '</' . $ordinal_tag . '>' . $match[$trailing_chars];
+  }
+  else {
+    $output = '';
+  }
+  return $output;
+}
+
+/**
+ * Returns a matched phone number in this format: (555) 222-1111.
+ *
+ * Callback for preg_replace_callback() within _filter_text_only().
+ */
+function _filter_phone_format_parse_matches($match, $filter_settings = NULL) {
+  // Process the matched phone number.
+  if (!empty($match)) {
+    // Define position of each capture group in the regexp.
+    $area_code = 1;
+    $prefix_3digit = 2;
+    $suffix_4digit = 3;
+    // Re-format phone number.
+    $output = '(' . $match[$area_code] . ') ' . $match[$prefix_3digit] . '-' . $match[$suffix_4digit];
   }
   else {
     $output = '';
