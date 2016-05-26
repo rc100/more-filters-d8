@@ -14,7 +14,7 @@ use Drupal\filter\Plugin\FilterBase;
  * @Filter(
  *   id = "filter_ordinals",
  *   title = @Translation("Wrap ordinals (nd/st/th/rd) in <code>&lt;span&gt;</code> tags."),
- *   description = @Translation("Examples: 1st, 2nd, 3rd, 4th, etc."),
+ *   description = @Translation("Allows ordinals to be superscripted separately with css. Examples: 1st, 2nd, 3rd, 4th, etc."),
  *   type = Drupal\filter\Plugin\FilterInterface::TYPE_MARKUP_LANGUAGE
  * )
  */
