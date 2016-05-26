@@ -146,14 +146,16 @@ function _filter_ordinals_parse_matches($match, $filter_settings = NULL) {
   // (for this dummy call, set $match = NULL)
   static $settings;
 
-  $settings_use_sup_tag = FALSE;
-
   if ($filter_settings !== NULL) {
     $settings = $filter_settings;
   }
 
+  // Get relevant settings.
   if (isset($settings)) {
     $settings_use_sup_tag = $settings['more_filters_ordinals_tag_default'];
+  }
+  else {
+    $settings_use_sup_tag = FALSE;
   }
 
   // Process the matched ordinal.
