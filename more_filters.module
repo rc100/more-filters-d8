@@ -18,7 +18,7 @@ function more_filters_help($route_name, RouteMatchInterface $route_match) {
       $output .= '<h3>' . t('About') . '</h3>';
       $output .= '<p>' . t('A collection of useful input filters:') . '</p>';
       $output .= '<ul>';
-      $output .= '<li>' . t('Ordinals Filter - Wraps ordinals (nd/st/th/rd) in &lt;span class="ordinal"&gt; tags.') . '</li>';
+      $output .= '<li>' . t('Ordinals Filter - Wraps ordinals (nd/st/th/rd) in &lt;span&gt; tags, so they can be superscripted with css.') . '</li>';
       $output .= '</ul>';
       return $output;
 
@@ -37,11 +37,13 @@ function more_filters_help($route_name, RouteMatchInterface $route_match) {
  *
  * @param string $text
  *   The text to apply the filter to.
+ * @param object $filter
+ *   The Filter object.
  *
  * @return string
  *   The processed text with filter applied.
  */
-function _filter_ordinals($text) {
+function _filter_ordinals($text, $filter) {
   // The filter callback to call for each matching item.
   $task = '_filter_ordinals_parse_matches';
   // The regex pattern for finding ordinals (case-insensitive). Ordinals must
@@ -50,8 +52,12 @@ function _filter_ordinals($text) {
   $pattern = "/([0-9]+)(nd|st|th|rd)([^a-zA-Z0-9]+)/i";
 
   // Apply filter to text.
-  $text = _filter_text_only($text, $task, $pattern);
+  $text = _filter_text_only($text, $filter, $task, $pattern);
 
+  // @todo
+  // Add support for settings: tags to ignore / class name to use in <span> /
+  // option to use <sup> with no class, instead of <span>.
+  // Also, add handling for HTML comments (as seen in _filter_url()).
   return $text;
 }
 
@@ -63,6 +69,8 @@ function _filter_ordinals($text) {
  *
  * @param string $text
  *   The text to apply the filter to.
+ * @param object $filter
+ *   The Filter object.
  * @param string $task
  *   The callback function to use for filtering text.
  * @param string $pattern
@@ -73,8 +81,9 @@ function _filter_ordinals($text) {
  * @return string
  *   The processed text with filter applied.
  */
-function _filter_text_only($text, $task, $pattern, $ignore_tags = array()) {
-
+function _filter_text_only($text, $filter, $task, $pattern, $ignore_tags = array()) {
+  // Statically cache filter settings in callback fn with dummy call.
+  $task(NULL, $filter->settings);
   // Revert to default $ignore_tags, if none provided.
   if (empty($ignore_tags)) {
     $ignore_tags = 'a|script|style|code|pre';
@@ -120,12 +129,9 @@ function _filter_text_only($text, $task, $pattern, $ignore_tags = array()) {
     }
   }
 
-  // Re-assemble the chunks.
+  // Re-assemble the chunks for output.
   $text = implode($chunks);
 
-  // @todo
-  // Add support for settings: tags to ignore / class name to use in <span>.
-  // Also, add handling for HTML comments (as seen in _filter_url()).
   return $text;
 }
 
@@ -134,20 +140,45 @@ function _filter_text_only($text, $task, $pattern, $ignore_tags = array()) {
  *
  * Callback for preg_replace_callback() within _filter_ordinals().
  */
-function _filter_ordinals_parse_matches($match) {
-  // Set tag and tag class to wrap ordinal with.
-  $ordinal_tag = 'span';
-  $ordinal_class = "ordinal";
-  // Define position of each capture group in the regexp.
-  $numerics = 1;
-  $ordinal = 2;
-  $trailing_chars = 3;
+function _filter_ordinals_parse_matches($match, $filter_settings = NULL) {
+  // Allow the filter's form settings to be passed into this callback fn and
+  // statically cached by initializing it prior to preg_replace_callback()
+  // (for this dummy call, set $match = NULL)
+  static $settings;
 
-  $output = $match[$numerics];
-  $output .= '<' . $ordinal_tag . ' class="' . $ordinal_class . '">';
-  $output .= $match[$ordinal];
-  $output .= '</' . $ordinal_tag . '>' . $match[$trailing_chars];
+  $settings_use_sup_tag = FALSE;
 
+  if ($filter_settings !== NULL) {
+    $settings = $filter_settings;
+  }
+
+  if (isset($settings)) {
+    $settings_use_sup_tag = $settings['more_filters_ordinals_tag_default'];
+  }
+
+  // Process the matched ordinal.
+  if (!empty($match)) {
+    // Set tag and tag class to wrap ordinal with (based on settings form).
+    $ordinal_tag = $settings_use_sup_tag ? 'sup' : 'span';
+    $ordinal_class = "ordinal";
+    $ordinal_class_txt = ' class="' . $ordinal_class . '"';
+    // Do not add ordinal class when using <sup> tags.
+    if ($ordinal_tag == 'sup') {
+      $ordinal_class_txt = '';
+    }
+    // Define position of each capture group in the regexp.
+    $numerics = 1;
+    $ordinal = 2;
+    $trailing_chars = 3;
+    // Build up wrapped ordinal for output.
+    $output = $match[$numerics];
+    $output .= '<' . $ordinal_tag . $ordinal_class_txt . '>';
+    $output .= $match[$ordinal];
+    $output .= '</' . $ordinal_tag . '>' . $match[$trailing_chars];
+  }
+  else {
+    $output = '';
+  }
   return $output;
 }
 
