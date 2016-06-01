@@ -17,16 +17,27 @@ Install the module in the standard way. See [Installing contributed modules](htt
 
 ## Configuration
 
-1. Go to the Text Formats configuration page:
-     Administration > Configuration > Content authoring > Text formats and editors
-     -or-
-     `/admin/config/content/formats`
+The filters in this module can be configured and applied to content as you would
+with any other filter (for a given text format).
+
+1. Go to the "Text Formats and editors" configuration page:
+
+   Administration > Configuration > Content authoring > Text formats and editors
+   (or `/admin/config/content/formats`)
 
 2. Click the "Configure" link for the Text Format you wish to add filter(s) to.
 
-3. Scroll down to the "Enabled Filters" section, then click the checkbox for the filter(s) you
-   wish to enable.
+3. Scroll down to the "Enabled Filters" section, then click the checkbox for the
+   filter(s) you wish to enable.
 
-4. (Optional) Some of the filters in this module (such as "Ordinals") may have additional settings
-   available in the "Filter Settings" section. Click the tab for the filter you would like to
-   adjust settings for.
+4. (Optional) Some of the filters in this module (such as "Ordinals") may have
+   additional settings available in the "Filter Settings" section. Click the tab
+   for the filter you would like to adjust settings for.
+
+5. Click the "Save Configuration" button.
+
+6. Create or edit a content entity, then add content to a field that uses the
+   same text format you selected above (in Step 2).
+
+7. Save the content entity - the saved content entity will be displayed with the
+   filter(s) you selected above (in Step 3).
