@@ -176,7 +176,7 @@ function _filter_ordinals_parse_matches($match, $filter_settings = NULL) {
   }
 
   // Get relevant settings.
-  if (isset($settings)) {
+  if (isset($settings) && isset($settings['more_filters_ordinals_tag_default'])) {
     $settings_use_sup_tag = $settings['more_filters_ordinals_tag_default'];
   }
   else {
