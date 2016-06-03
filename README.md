@@ -5,7 +5,7 @@ includes:
 
 * Ordinals Filter - Wraps ordinals (nd/st/th/rd) in <span> tags, so they can be
   superscripted with css.
-* Phone Format Filter - Convert phone numbers in 555.222.1111 format to
+* Phone Format Filter - Converts phone numbers in 555.222.1111 format to
   (555) 222-1111 format.
 
 ## Requirements

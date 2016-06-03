@@ -33,10 +33,10 @@ class FilterOrdinals extends FilterBase {
    */
   public function tips($long = FALSE) {
     if ($long) {
-      return $this->t('Adds &lt;span class="ordinal"&gt; tags around any ordinals (nd/st/th/rd), such as in 1st, 2nd, 3rd, etc.');
+      return $this->t('Add &lt;span class="ordinal"&gt; tags around any ordinals (nd/st/th/rd), such as in 1st, 2nd, 3rd, etc.');
     }
     else {
-      return $this->t('Wraps ordinals (nd/st/th/rd) in &lt;span class="ordinal"&gt; tags.');
+      return $this->t('Wrap ordinals (nd/st/th/rd) in &lt;span class="ordinal"&gt; tags.');
     }
   }
 
