@@ -1,11 +1,17 @@
 # More Filters
 
-A collection of useful input filters:
+More Filters is a collection of useful Filter plugins. Currently, the module
+includes the following filters:
 
 * Ordinals Filter - Wraps ordinals (nd/st/th/rd) in <span> tags, so they can be
   superscripted with css.
 * Phone Format Filter - Convert phone numbers in 555.222.1111 format to
   (555) 222-1111 format.
+
+
+NOTE: This Drupal 8 module is a complete rewrite of the Drupal 6 more_filters
+module; some filters from the original module have not been ported yet and will
+be included in future updates.
 
 ## Requirements
 
@@ -41,3 +47,6 @@ with any other filter (for a given text format).
 
 7. Save the content entity - the saved content entity will be displayed with the
    filter(s) you selected above (in Step 3).
+
+## Maintainers
+Rian Callahan, https://www.drupal.org/u/rc_100
