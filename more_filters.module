@@ -16,10 +16,10 @@ function more_filters_help($route_name, RouteMatchInterface $route_match) {
     case 'help.page.more_filters':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('A collection of useful input filters:') . '</p>';
+      $output .= '<p>' . t('A collection of useful Filter plugins:') . '</p>';
       $output .= '<ul>';
       $output .= '<li>' . t('Ordinals Filter - Wraps ordinals (nd/st/th/rd) in &lt;span&gt; tags, so they can be superscripted with css.') . '</li>';
-      $output .= '<li>' . t('Phone Format Filter - Convert phone numbers in 555.222.1111 format to (555) 222-1111 format.') . '</li>';
+      $output .= '<li>' . t('Phone Format Filter - Converts phone numbers in 555.222.1111 format to (555) 222-1111 format.') . '</li>';
       $output .= '</ul>';
       return $output;
 
@@ -62,7 +62,7 @@ function _filter_ordinals($text, $filter) {
 }
 
 /**
- * Convert phone numbers in 555.222.1111 format to (555) 222-1111 format.
+ * Converts phone numbers in 555.222.1111 format to (555) 222-1111 format.
  *
  * @param string $text
  *   The text to apply the filter to.
